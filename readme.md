@@ -57,3 +57,10 @@ Text summarization is a microservice web api written in using the FastAPI Framew
 
 - list the 2 slowest tests
  docker-compose exec web python -m pytest --durations=2
+
+
+ #### Code Coverage with pytest-cov
+ - docker-compose exec web python -m pytest --cov="."
+ generates report in the terminal 
+ - docker-compose exec web python -m pytest --cov="." --cov-report html
+ generates html report 
