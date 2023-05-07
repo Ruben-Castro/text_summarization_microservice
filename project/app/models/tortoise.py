@@ -10,6 +10,7 @@ class TextSummary(models.Model):
     def __str__(self):
         return self.url
 
+
 # create a pydantic model based on the Tortoise model
 
 

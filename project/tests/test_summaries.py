@@ -2,11 +2,12 @@ import json
 
 
 def test_create_summary(test_app_with_db):
-
-    response = test_app_with_db.post("/summaries/", data=json.dumps({'url': 'https://foo.bar'}))
+    response = test_app_with_db.post(
+        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+    )
 
     response.status_code == 201
-    response.json()['url'] == 'https://foo.bar'
+    response.json()["url"] == "https://foo.bar"
 
 
 def test_create_summaries_invalid_json(test_app):
@@ -17,15 +18,17 @@ def test_create_summaries_invalid_json(test_app):
             {
                 "loc": ["body", "url"],
                 "msg": "field required",
-                "type": "value_error.missing"
+                "type": "value_error.missing",
             }
         ]
     }
 
 
 def test_read_summary(test_app_with_db):
-    response = test_app_with_db.post('/summaries/', data=json.dumps({'url': 'https://foo.bar'}))
-    summary_id = response.json()['id']
+    response = test_app_with_db.post(
+        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+    )
+    summary_id = response.json()["id"]
 
     response = test_app_with_db.get(f"/summaries/{summary_id}/")
     assert response.status_code == 200
@@ -38,15 +41,17 @@ def test_read_summary(test_app_with_db):
 
 
 def test_read_summary_incorrect_id(test_app_with_db):
-    response = test_app_with_db.get('/summaries/999/')
+    response = test_app_with_db.get("/summaries/999/")
     assert response.status_code == 404
-    assert response.json()['detail'] == "Summary not found"
+    assert response.json()["detail"] == "Summary not found"
 
 
 def test_read_all_summaries(test_app_with_db):
-    response = test_app_with_db.post('/summaries/', data=json.dumps({"url": "https://foo.bar"}))
-    summary_id = response.json()['id']
-    response = test_app_with_db.get('/summaries/')
+    response = test_app_with_db.post(
+        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+    )
+    summary_id = response.json()["id"]
+    response = test_app_with_db.get("/summaries/")
     assert response.status_code == 200
     response_list = response.json()
-    assert len(list(filter(lambda d: d['id'] == summary_id, response_list))) == 1
+    assert len(list(filter(lambda d: d["id"] == summary_id, response_list))) == 1
