@@ -1,5 +1,5 @@
-import os 
-import pytest 
+import os
+import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
@@ -13,19 +13,20 @@ def get_settings_override():
 
 @pytest.fixture(scope="module")
 def test_app():
-    #setup 
+    # setup
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
     with TestClient(app) as test_client:
 
-        #testing
+        # testing
         yield test_client
-    
-        #tear down 
+
+        # tear down
+
 
 @pytest.fixture(scope="module")
 def test_app_with_db():
-    #set up 
+    # set up
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
     register_tortoise(
@@ -38,7 +39,7 @@ def test_app_with_db():
 
     with TestClient(app) as test_client:
 
-        #testing
+        # testing
         yield test_client
 
-        #tear down 
+        # tear down

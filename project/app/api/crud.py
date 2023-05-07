@@ -6,7 +6,8 @@ from app.models.tortoise import TextSummary
 
 log = logging.getLogger("uvicorn")
 
-async def post(payload:SummaryPayloadSchema) -> int:
+
+async def post(payload: SummaryPayloadSchema) -> int:
     summary = TextSummary(
         url=payload.url,
         summary="dummy summary"
@@ -15,13 +16,15 @@ async def post(payload:SummaryPayloadSchema) -> int:
     await summary.save()
     return summary.id
 
-async def get(id:int) -> Optional[dict]:
-    summary = await TextSummary.filter(id= id).first().values()
+
+async def get(id: int) -> Optional[dict]:
+    summary = await TextSummary.filter(id=id).first().values()
     log.info(f"Summary= {summary}")
     if summary:
         return summary
-    return None 
+    return None
 
-async def get_all()-> List:
+
+async def get_all() -> List:
     summaries = await TextSummary.all().values()
     return summaries
