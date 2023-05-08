@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary
-from app.summarizer import generate_summary
 
 log = logging.getLogger("uvicorn")
 

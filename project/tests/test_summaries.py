@@ -1,8 +1,9 @@
 import json
+from datetime import datetime
+
 import pytest
 
-from datetime import datetime
-from app.api import summaries, crud
+from app.api import crud, summaries
 
 
 def test_create_summary(test_app_with_db, monkeypatch):
@@ -40,13 +41,12 @@ def test_create_summaries_invalid_json(test_app):
 def test_read_summary(test_app_with_db, monkeypatch):
     def mock_generate_summary(summary_id, url):
         return None
-    
+
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
         "/summaries/", data=json.dumps({"url": "https://foo.bar"})
     )
-
 
     async def mock_get(id):
         return test_data
@@ -62,7 +62,7 @@ def test_read_summary(test_app_with_db, monkeypatch):
     response = test_app_with_db.get(f"/summaries/{summary_id}/")
 
     assert response.status_code == 200
-   
+
     response_dict = response.json()
     print(response_dict)
     assert response_dict["id"] == summary_id
@@ -90,10 +90,10 @@ def test_read_summary_incorrect_id(test_app_with_db):
     }
 
 
-def test_read_all_summaries(test_app_with_db,monkeypatch):
+def test_read_all_summaries(test_app_with_db, monkeypatch):
     def mock_generate_summary(summary_id, url):
         return None
-    
+
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
@@ -106,10 +106,10 @@ def test_read_all_summaries(test_app_with_db,monkeypatch):
     assert len(list(filter(lambda d: d["id"] == summary_id, response_list))) == 1
 
 
-def test_remove_summary(test_app_with_db,monkeypatch):
+def test_remove_summary(test_app_with_db, monkeypatch):
     def mock_generate_summary(summary_id, url):
         return None
-    
+
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
@@ -140,10 +140,10 @@ def test_remove_summary_incorrect_id(test_app_with_db):
     }
 
 
-def test_update_summary(test_app_with_db,monkeypatch):
+def test_update_summary(test_app_with_db, monkeypatch):
     def mock_generate_summary(summary_id, url):
         return None
-    
+
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
