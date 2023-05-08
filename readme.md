@@ -66,3 +66,6 @@ Text summarization is a microservice web api written in using the FastAPI Framew
  generates report in the terminal 
  - docker-compose exec web python -m pytest --cov="." --cov-report html
  generates html report 
+
+ #### run unit test in parallel 
+ - docker-compose exec web pytest -k "unit" -n auto
