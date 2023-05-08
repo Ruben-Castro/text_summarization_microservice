@@ -3,12 +3,13 @@ from typing import List, Optional
 
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary
+from app.summarizer import generate_summary
 
 log = logging.getLogger("uvicorn")
 
 
 async def post(payload: SummaryPayloadSchema) -> int:
-    summary = TextSummary(url=payload.url, summary="dummy summary")
+    summary = TextSummary(url=payload.url, summary="")
 
     await summary.save()
     return summary.id

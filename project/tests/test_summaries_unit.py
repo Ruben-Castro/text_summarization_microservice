@@ -3,19 +3,29 @@ from datetime import datetime
 
 import pytest
 
-from app.api import crud, summaries
+from app.api import crud,summaries
 
 
 def test_create_summary(test_app, monkeypatch):
     test_request_payload = {"url": "https://foo.bar"}
     test_response_payload = {"id": 1, "url": "https://foo.bar"}
+    def mock_generate_summary(summary_id, url):
+        return None
 
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
+    response = test_app.post(
+        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+    )
     async def mock_post(payload):
         return 1
 
     monkeypatch.setattr(crud, "post", mock_post)
 
-    response = test_app.post("/summaries/", data=json.dumps(test_request_payload),)
+    response = test_app.post(
+        "/summaries/",
+        data=json.dumps(test_request_payload),
+    )
 
     assert response.status_code == 201
     assert response.json() == test_response_payload
@@ -81,8 +91,9 @@ def test_read_all_summaries(test_app, monkeypatch):
             "url": "https://testdrivenn.io",
             "summary": "summary",
             "created_at": datetime.utcnow().isoformat(),
-        }
+        },
     ]
+
     async def mock_get_all():
         return test_data
 
@@ -91,7 +102,6 @@ def test_read_all_summaries(test_app, monkeypatch):
     response = test_app.get("/summaries/")
     assert response.status_code == 200
     assert response.json() == test_data
-
 
 
 def test_remove_summary(test_app, monkeypatch):
@@ -125,21 +135,23 @@ def test_remove_summary_incorrect_id(test_app, monkeypatch):
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
-
     test_request_payload = {"url": "https://foo.bar", "summary": "updated"}
     test_response_payload = {
-            "id": 1,
-            "url": "https://foo.bar",
-            "summary": "summary",
-            "created_at": datetime.utcnow().isoformat(),
-        }
+        "id": 1,
+        "url": "https://foo.bar",
+        "summary": "summary",
+        "created_at": datetime.utcnow().isoformat(),
+    }
 
     async def mock_put(id, payload):
-            return test_response_payload
+        return test_response_payload
 
     monkeypatch.setattr(crud, "put", mock_put)
 
-    response = test_app.put("/summaries/1/", data=json.dumps(test_request_payload),)
+    response = test_app.put(
+        "/summaries/1/",
+        data=json.dumps(test_request_payload),
+    )
     assert response.status_code == 200
     assert response.json() == test_response_payload
 
@@ -197,7 +209,9 @@ def test_remove_summary_incorrect_id(test_app, monkeypatch):
         ],
     ],
 )
-def test_update_summary_invalid(test_app, monkeypatch, summary_id, payload, status_code, detail):
+def test_update_summary_invalid(
+    test_app, monkeypatch, summary_id, payload, status_code, detail
+):
     async def mock_put(id, payload):
         return None
 
@@ -206,6 +220,7 @@ def test_update_summary_invalid(test_app, monkeypatch, summary_id, payload, stat
     response = test_app.put(f"/summaries/{summary_id}/", data=json.dumps(payload))
     assert response.status_code == status_code
     assert response.json()["detail"] == detail
+
 
 def test_update_summary_invalid_url(test_app):
     response = test_app.put(
